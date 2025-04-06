@@ -1,4 +1,4 @@
-import DetailComment from "@/features/home/components/summaryDetail/DetailComment";
+import CommentSector from "@/features/post/components/CommentSector";
 import styled from "styled-components";
 
 const DiscussionContainer = styled.div`
@@ -46,47 +46,7 @@ const Content = styled.div`
   margin-bottom: 20px;
 `;
 
-const CommentsSection = styled.div`
-  margin-top: 20px;
-`;
-
-const CommentInputContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
-`;
-
-const CommentInput = styled.textarea`
-  width: 90%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  resize: none;
-`;
-
-const CommentButton = styled.button`
-  margin-top: 10px;
-  padding: 8px 15px;
-  background: black;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-`;
-
-const dummyComment = [
-  {
-    name: "신혁수",
-    text: "문제는 정말 중요한 주제입니다. 특히 의사결정 과정의 투명성이 가장 중요하다고 생각합니다.",
-  },
-  {
-    name: "나영채",
-    text: " 과정의 투명성이 가장 중요하다고 생각합니다.",
-  },
-];
-
-function SummaryDetail() {
+function PostDetail() {
   return (
     <DiscussionContainer>
       <Header>
@@ -102,24 +62,9 @@ function SummaryDetail() {
         <ContentTitle>토론 내용</ContentTitle>
         인공지능의 윤리적 측면에서 가장 중요한 것은 투명성과 책임성입니다...
       </Content>
-
-      <CommentsSection>
-        <ContentTitle>댓글 (45)</ContentTitle>
-        <CommentInputContainer>
-          <CommentInput placeholder="댓글을 입력하세요..." />
-          <CommentButton>등록</CommentButton>
-        </CommentInputContainer>
-
-        {dummyComment.map((comment) => (
-          <DetailComment
-            key={comment.name}
-            name={comment.name}
-            text={comment.text}
-          />
-        ))}
-      </CommentsSection>
+      <CommentSector />
     </DiscussionContainer>
   );
 }
 
-export default SummaryDetail;
+export default PostDetail;

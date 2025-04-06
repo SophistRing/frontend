@@ -1,12 +1,12 @@
 import styled from "styled-components";
 
 const FooterSection = styled.footer`
-  height: 8vh;
+  height: 80px;
   text-align: center;
   border-top: 1px solid gray;
   font-size: 0.7rem;
-  color: #9ca3af;
-  background-color: white;
+  color: white;
+  background-color: black;
   width: 100%;
 `;
 

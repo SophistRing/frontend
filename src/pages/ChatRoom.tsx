@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import styled from "styled-components";
-import io from "socket.io-client";
+//import io from "socket.io-client";
 import ResultModal from "@/features/chatting/ResultModal";
 
 const Container = styled.div`
@@ -89,7 +89,7 @@ const SendButton = styled.button`
   margin-left: 5px;
 `;
 
-const socket = io("http://localhost:4000");
+//const socket = io("http://localhost:4000");
 
 const ChatRoom = () => {
   const [messages, setMessages] = useState<{ user: string; text: string }[]>(
@@ -98,20 +98,20 @@ const ChatRoom = () => {
   const [showModal, setShowModal] = useState(false);
   const [input, setInput] = useState("");
 
-  useEffect(() => {
-    socket.on("message", (message) => {
-      setMessages((prev) => [...prev, message]);
-    });
+  // useEffect(() => {
+  //   socket.on("message", (message) => {
+  //     setMessages((prev) => [...prev, message]);
+  //   });
 
-    return () => {
-      socket.off("message");
-    };
-  }, []);
+  //   return () => {
+  //     socket.off("message");
+  //   };
+  // }, []);
 
   const sendMessage = () => {
     if (input.trim()) {
       const message = { user: "나", text: input };
-      socket.emit("message", message);
+     // socket.emit("message", message);
       setMessages((prev) => [...prev, message]);
       setInput("");
     }

@@ -11,8 +11,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-oauth/google": "^0.12.1",
     "@tanstack/react-query": "^5.68.0",
     "@tanstack/react-query-devtools": "^5.68.0",
+    "axios": "^1.8.4",
+    "jwt-decode": "^4.0.0",
     "msw": "^2.7.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -49,5 +52,10 @@
   "bugs": {
     "url": "https://github.com/GoToSwiss/frontend/issues"
   },
-  "homepage": "https://github.com/GoToSwiss/frontend#readme"
+  "homepage": "https://github.com/GoToSwiss/frontend#readme",
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  }
 }

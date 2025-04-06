@@ -12,6 +12,10 @@ const Background = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+`;
+
+const Main = styled.main`
+  flex: 1;
   overflow: hidden;
 `;
 
@@ -19,11 +23,13 @@ function CommonLayout() {
   return (
     <Background>
       <Header />
-      <QueryErrorBoundary>
-        <Suspense fallback={<Loading />}>
-          <Outlet />
-        </Suspense>
-      </QueryErrorBoundary>
+      <Main>
+        <QueryErrorBoundary>
+          <Suspense fallback={<Loading />}>
+            <Outlet />
+          </Suspense>
+        </QueryErrorBoundary>
+      </Main>
       <Footer />
     </Background>
   );

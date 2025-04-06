@@ -1,29 +1,27 @@
-import Category from "@/features/home/components/category/Category";
-import ChattingSummary from "@/features/home/components/summary/ChattingSummary";
-import styled from "styled-components";
+import DebateStartSection from "@/features/home/components/DebateStartSection";
 
-const HomeContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  min-height: 80vh;
-  margin-top: 20px;
-`;
-
-const HomeContents = styled.main`
-  width: 80vw;
-  display: flex;
-  flex-direction: column;
-`;
+import MainBanner from "@/features/home/components/MainBanner";
+import PostCard from "@/features/post/components/PostCart";
+import { useGetPost } from "@/features/post/query/post.query";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
+  const { data } = useGetPost();
+  const navigate = useNavigate();
+
   return (
     <>
-      <HomeContainer>
-        <HomeContents>
-          <ChattingSummary />
-        </HomeContents>
-        <Category />
-      </HomeContainer>
+      <>
+        <MainBanner />
+        {data.result.map((debate) => (
+          <PostCard
+            key={debate.postId}
+            {...debate}
+            onClick={() => navigate(`${debate.postId}`)}
+          />
+        ))}
+        <DebateStartSection />
+      </>
     </>
   );
 }

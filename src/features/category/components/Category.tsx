@@ -1,6 +1,7 @@
 import styled from "styled-components";
-import DebateModal from "../DebateModal";
 import { useState } from "react";
+import DebateModal from "../../../components/DebateModal";
+import useCategoryStore from "../store/useCategoryStore";
 
 const CategorySection = styled.aside`
   width: 15vw;
@@ -14,21 +15,21 @@ const CategoryContents = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 5px;
-  margin-bottom: 20px;
+
 `;
 
-const CategorySelectButton = styled.button`
+const CategorySelectButton = styled.button<{ selected: boolean }>`
   font-size: 0.7rem;
   text-indent: 8px;
   border: none;
   text-align: left;
   margin-bottom: 5px;
   padding: 1%;
-  background-color: rgba(0, 0, 0, 0);
-  :focus {
-    background-color: #4b5563;
-  }
+  background-color: ${({ selected }) =>
+    selected ? "#4b5563" : "rgba(0, 0, 0, 0)"};
+  color: ${({ selected }) => (selected ? "white" : "black")};
 `;
+
 const CategoryTitle = styled.p`
   color: #111827;
   font-size: 0.7rem;
@@ -44,28 +45,40 @@ const CategoryCreateButton = styled.button`
   font-size: 0.6rem;
   height: 24px;
   border: none;
-  border-radius: 5px;
+  border-radius: 0px 0px 5px 5px;
   cursor: pointer;
 `;
 
-const dummyCategory = [
-  "시사/정치",
-  "과학/기술",
-  "문화/예술",
-  "스포츠",
-  "경제",
-  "교육",
+const category = [
+  { label: "시사/정치", value: "debate" },
+  { label: "과학/기술", value: "debate" },
+  { label: "문화/예술", value: "debate" },
+  { label: "스포츠", value: "debate" },
+  { label: "경제", value: "debate" },
+  { label: "교육", value: "debate" },
 ];
 
 function Category() {
+  const { selectedCategory, setCategory } = useCategoryStore();
   const [showModal, setShowModal] = useState(false);
+
+  const onClick = (value: string) => {
+    if (value === selectedCategory) setCategory(undefined);
+    else setCategory(value);
+  };
 
   return (
     <CategorySection>
       <CategoryContents>
         <CategoryTitle>카테고리</CategoryTitle>
-        {dummyCategory.map((item) => (
-          <CategorySelectButton key={item}>{item}</CategorySelectButton>
+        {category.map((item) => (
+          <CategorySelectButton
+            key={item.label}
+            selected={selectedCategory === item.label}
+            onClick={() => onClick(item.value)}
+          >
+            {item.label}
+          </CategorySelectButton>
         ))}
       </CategoryContents>
       <CategoryCreateButton onClick={() => setShowModal(true)}>
@@ -75,4 +88,5 @@ function Category() {
     </CategorySection>
   );
 }
+
 export default Category;

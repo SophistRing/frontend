@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import GoogleLogo from "@/assets/google.svg?react";
+import { googleAuthUrl } from "@/features/login/service/loginConfig";
+
 const LoginContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -49,7 +51,6 @@ const LoginButton = styled.button`
   }
 `;
 
-
 const TextLink = styled.p`
   font-size: 12px;
   color: #777;
@@ -67,13 +68,16 @@ const TextLink = styled.p`
 `;
 
 function Login() {
+  const handleLogin = () => {
+    window.location.href = googleAuthUrl;
+  };
   return (
     <LoginContainer>
       <Logo>로고</Logo>
       <Title>토론의 장에 오신 것을 환영합니다</Title>
       <Subtitle>함께 이야기를 나누어보세요</Subtitle>
 
-      <LoginButton>
+      <LoginButton onClick={handleLogin}>
         <GoogleLogo />
         구글 계정으로 로그인
       </LoginButton>

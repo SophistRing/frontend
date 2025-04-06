@@ -4,7 +4,6 @@ import styled from "styled-components";
 const SummaryContainer = styled.main`
   background: white;
   border-radius: 5px;
-  width: 90%;
   border: solid #e5e7eb;
   margin-bottom: 30px;
   margin-left: 10px;
@@ -13,7 +12,9 @@ const SummaryContainer = styled.main`
 
 const SummaryHeader = styled.p`
   color: #111827;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
+  height: 40px;
+  margin-top: 20px;
   font-weight: bold;
   text-indent: 8px;
 `;
