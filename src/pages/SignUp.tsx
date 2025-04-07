@@ -1,4 +1,7 @@
+import { useSetProfile } from "@/features/login/api/profile.api";
+import { ProfileType } from "@/features/login/types/ProfileType";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -98,14 +101,15 @@ const categoryOptions = [
 ];
 
 function SignUp() {
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<ProfileType>({
     gender: "male",
     nickname: "",
-    age: "",
+    age: 20,
     introduction: "",
     preferCategory: "",
   });
-
+  const { mutate } = useSetProfile();
+  const navigate = useNavigate();
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -120,7 +124,8 @@ function SignUp() {
   };
 
   const handleSubmit = () => {
-    console.log("회원가입 데이터:", form);
+    mutate(form);
+    navigate("/");
   };
 
   return (

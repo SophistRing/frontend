@@ -19,7 +19,7 @@ function Debate() {
               key={debate.roomId}
               {...debate}
               date={debate.createdAt}
-              onClick={() => navigate(`room/${debate.roomId}`)}
+              onClick={() => navigate(`${debate.roomId}`)}
             />
           ))}
         </ItemCover>

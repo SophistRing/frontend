@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 const LoadingContainer = styled.div`
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh; /* 전체 뷰포트 기준으로 정중앙 */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -43,15 +43,20 @@ const SubText = styled.p`
   text-align: center;
 `;
 
-function Loading() {
+interface LoadingProps {
+  title: string;
+  description: string;
+}
+
+function Loading({ title, description }: LoadingProps) {
   return (
     <LoadingContainer>
       <LoadingSpinner />
-      <LoadingText>데이터를 불러오는 중</LoadingText>
+      <LoadingText>{title}</LoadingText>
       <SubText>
         <br />
-        잠시만 기다려주세요... <br /> <br />
-        열심히 불러오고 있습니다 🚀{" "}
+        {description} <br /> <br />
+        열심히 불러오고 있습니다 🚀
       </SubText>
     </LoadingContainer>
   );

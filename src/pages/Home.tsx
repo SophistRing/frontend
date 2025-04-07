@@ -17,7 +17,7 @@ function Home() {
           <PostCard
             key={debate.postId}
             {...debate}
-            onClick={() => navigate(`${debate.postId}`)}
+            onClick={() => navigate(`/post/${debate.postId}`)}
           />
         ))}
         <DebateStartSection />

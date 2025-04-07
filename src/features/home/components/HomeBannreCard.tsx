@@ -1,22 +1,8 @@
 import styled from "styled-components";
-
-interface DebateData {
-  title: string;
-  timer: number;
-  category: string;
-  status: string;
-  roomId: string;
-  description: string;
-  createdAt: string;
-  writer: string;
-}
-
-interface DebateCardProps {
-  data: DebateData;
-}
+import { RoomType } from "../types/RoomType";
 
 interface CardProps {
-  status: DebateData["status"];
+  status: string;
 }
 
 const Card = styled.div<CardProps>`
@@ -34,6 +20,7 @@ const Card = styled.div<CardProps>`
   &:hover {
     transform: scale(1.05);
   }
+  cursor: pointer;
 `;
 
 const Title = styled.h2`
@@ -84,9 +71,14 @@ const CreatedAt = styled.div`
   text-align: right;
 `;
 
-function DebateCard({ data }: DebateCardProps) {
+interface DebateCardProps {
+  data: RoomType;
+  onClick: () => void;
+}
+
+function DebateCard({ data, onClick }: DebateCardProps) {
   return (
-    <Card status={data.status}>
+    <Card status={data.status} onClick={onClick}>
       <Title>{data.title}</Title>
       <Category>{data.category}</Category>
       <Status status={data.status}>{data.status}</Status>

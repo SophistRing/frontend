@@ -7,6 +7,7 @@ interface ImportMetaEnv {
   readonly VITE_API_PROTOCOL: string;
   readonly VITE_APP_GOOGLE_AUTH_CLIENT_ID: string;
   readonly VITE_APP_GOOGLE_AUTH_REDIRECT_URI: string;
+  readonly VITE_BACK_URL: string;
   // 다른 환경 변수들에 대한 타입 정의...
 }
 

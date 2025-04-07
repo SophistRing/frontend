@@ -5,6 +5,9 @@ import envCompatible from "vite-plugin-env-compatible";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [svgr(), react(), envCompatible()],
+  define: {
+    global: {},
+  },
   build: {
     rollupOptions: {
       input: {

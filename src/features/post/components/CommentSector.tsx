@@ -25,8 +25,11 @@ const CommentInput = styled.textarea`
 
 const CommentButton = styled.button`
   margin-top: 10px;
-  padding: 8px 15px;
+  padding: 2px 8px;
   background: black;
+  width: 70px;
+  height: 30px;
+  font-size: 0.7rem;
   color: white;
   border: none;
   border-radius: 5px;
@@ -37,6 +40,7 @@ const CommentTitle = styled.h2`
   color: #111827;
   font-size: 0.9rem;
   font-weight: bold;
+  margin-bottom: 10px;
 `;
 
 function CommentSector() {

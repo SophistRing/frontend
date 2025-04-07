@@ -2,6 +2,7 @@ import styled, { css } from "styled-components";
 import DummyLogo from "@/assets/dummyLogo.svg?react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import DummyProfile from "@/assets/dummyLogo.svg?react";
+import { useProfileStore } from "@/features/login/store/useProfilestore";
 
 const HeaderSection = styled.header`
   border-bottom: 1px solid gray;
@@ -47,13 +48,16 @@ const NavigateButton = styled.button<{ active?: boolean }>`
   ${(props) =>
     props.active &&
     css`
-      border-bottom: 1px solid black;
+      border-bottom: 2px solid black;
     `}
+
+  cursor: pointer;
 `;
 
 function Header() {
   const navigate = useNavigate();
   const location = useLocation();
+  const profile = useProfileStore((state) => state.profile);
 
   return (
     <HeaderSection>
@@ -79,7 +83,11 @@ function Header() {
         </NavigateButton>
       </NavigationSection>
       <DummyProfile onClick={() => navigate("/dashboard")} />
-      <LoginButton to={"/login"}>로그인</LoginButton>
+      {profile ? (
+        profile.nickname
+      ) : (
+        <LoginButton to={"/login"}>로그인</LoginButton>
+      )}
     </HeaderSection>
   );
 }

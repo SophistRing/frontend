@@ -1,22 +1,14 @@
 import axios from "axios";
 import { useEffect } from "react";
-import styled from "styled-components";
-
-const LoadingContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-color: #f8f9fa;
-`;
-
-const H2 = styled.h2`
-  font-size: 1.5rem;
-  color: #343a40;
-`;
+import { useNavigate } from "react-router-dom";
+import Loading from "./Loading";
+import { LoginResponse } from "@/features/login/types/LoginType";
+import { useProfileStore } from "@/features/login/store/useProfilestore";
 
 function LoadingAuth() {
+  const navigate = useNavigate();
+  const setGoogle = useProfileStore((state) => state.setGoogle);
+  const setProfile = useProfileStore((state) => state.setProfile);
   const params = new URLSearchParams(window.location.search);
   const code = params.get("code");
   console.log(code);
@@ -27,19 +19,29 @@ function LoadingAuth() {
     }
 
     try {
-      const res = await axios.post(
-        "https://7760-115-91-214-5.ngrok-free.app/login/google/2",
+      const res: LoginResponse = await axios.post(
+        `${import.meta.env.VITE_BACK_URL}/login/google/2`,
         {
           code: code,
           redirectUrl: "http://localhost:5173/loadingAuth",
         }
       );
-
-      console.log(res);
-      //localStorage.setItem("bagtoken", accessToken);
-
-      //res.data.isExistingMember ? navigate("/home") : navigate("/nickname");
-      window.location.reload();
+      const pickRes = {
+        googleId: res.result.googleId,
+        email: res.result.email,
+        name: res.result.name,
+        givenName: res.result.givenName,
+        familyName: res.result.familyName,
+        imageUrl: res.result.imageUrl,
+      };
+      if (res.result.isFirstLogin) {
+        setGoogle(pickRes);
+        navigate("/signup");
+      } else {
+        if (res.result.profile) setProfile(res.result.profile);
+        setGoogle(pickRes);
+        navigate("/");
+      }
     } catch (error) {
       console.log("로그인 요청 중 오류 발생:", error);
     }
@@ -49,11 +51,7 @@ function LoadingAuth() {
     handleLoginPost();
   }, []); // 의존성 배열 제거
 
-  return (
-    <LoadingContainer>
-      <H2>로그인 중입니다...</H2>
-    </LoadingContainer>
-  );
+  return <Loading title="로그인 중.." description="로그인 하고 있어요!" />;
 }
 
 export default LoadingAuth;

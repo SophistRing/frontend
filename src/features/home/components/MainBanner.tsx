@@ -2,6 +2,7 @@ import styled from "styled-components";
 import DebateCard from "./HomeBannreCard";
 import banner from "@/assets/banner.png";
 import { useGetRoom } from "@/features/debate/query/room.query";
+import { useNavigate } from "react-router-dom";
 
 const BannerContainer = styled.div`
   display: flex;
@@ -28,6 +29,7 @@ const BannerTitle = styled.h1`
   font-size: xx-large;
   color: white;
   text-align: center;
+  margin-bottom: 20px;
 `;
 const BannerDescription = styled.h3`
   font-size: smaller;
@@ -48,6 +50,7 @@ const CardSection = styled.div`
 function MainBanner() {
   const { data } = useGetRoom();
   const slicedData = data.result.slice(0, 3);
+  const navigate = useNavigate();
   return (
     <BannerContainer>
       <BannerImg src={banner} alt="banner" />
@@ -58,7 +61,11 @@ function MainBanner() {
         </BannerDescription>
         <CardSection>
           {slicedData.map((item) => (
-            <DebateCard data={item}></DebateCard>
+            <DebateCard
+              key={item.roomId}
+              data={item}
+              onClick={() => navigate(`/debate/${item.roomId}`)}
+            ></DebateCard>
           ))}
         </CardSection>
       </BannerContentSection>

@@ -13,6 +13,7 @@ import LoadingAuth from "./pages/LoadingAuth";
 import Post from "./pages/Post";
 import PostDetail from "./pages/PostDetail";
 import SignUp from "./pages/SignUp";
+import Test from "./pages/Test";
 
 const router = createBrowserRouter([
   {
@@ -32,17 +33,19 @@ const router = createBrowserRouter([
         path: "/debate",
         element: <Debate />,
       },
-      { path: "/loadingAuth", element: <LoadingAuth /> },
+
       {
         path: "/post/:id",
         element: <PostDetail />,
       },
-      { path: "/chatting/:id", element: <ChatRoom /> },
+      { path: "/debate/:id", element: <ChatRoom /> },
       { path: "/dashboard", element: <Dashboard /> },
     ],
   },
+  { path: "/loadingAuth", element: <LoadingAuth /> },
   { path: "/login", element: <Login /> },
   { path: "/signup", element: <SignUp /> },
+  { path: "/test", element: <Test /> },
 ]);
 
 function App() {
