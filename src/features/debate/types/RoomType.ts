@@ -9,6 +9,7 @@ export interface RoomType {
   description: string;
   writer: string;
   createdAt: string;
+  isShare: boolean;
 }
 
 export type RoomResponse = ApiResponse<RoomType[]>;
@@ -23,3 +24,8 @@ export interface RoomMakeType {
   description: string;
 }
 export type RoomMakeResponse = ApiResponse<RoomMakeType>;
+
+export interface RoomEnterType {
+  roomId: string;
+  password: string | null;
+}

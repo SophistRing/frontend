@@ -80,9 +80,10 @@ function CommentSector() {
         <CommentButton onClick={handleSubmit}>등록</CommentButton>
       </CommentInputContainer>
 
-      {data.result.map((comment, index) => (
-        <CommentItem key={index} {...comment} />
-      ))}
+      {data?.result &&
+        data.result.map((comment, index) => (
+          <CommentItem key={index} {...comment} />
+        ))}
     </CommentsSection>
   );
 }

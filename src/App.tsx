@@ -6,14 +6,14 @@ import Home from "./pages/Home";
 import CommonLayout from "./layout/CommonLayout";
 import { queryClient } from "./services/TanstackQueryStore";
 import Login from "./pages/Login";
-import ChatRoom from "./pages/ChatRoom";
 import Dashboard from "./pages/Dashboard";
 import Debate from "./pages/Debate";
 import LoadingAuth from "./pages/LoadingAuth";
 import Post from "./pages/Post";
 import PostDetail from "./pages/PostDetail";
 import SignUp from "./pages/SignUp";
-import Test from "./pages/Test";
+import { ToastContainer } from "react-toastify";
+import Chatting from "./pages/Chatting";
 
 const router = createBrowserRouter([
   {
@@ -33,19 +33,17 @@ const router = createBrowserRouter([
         path: "/debate",
         element: <Debate />,
       },
-
       {
         path: "/post/:id",
         element: <PostDetail />,
       },
-      { path: "/debate/:id", element: <ChatRoom /> },
       { path: "/dashboard", element: <Dashboard /> },
     ],
   },
   { path: "/loadingAuth", element: <LoadingAuth /> },
   { path: "/login", element: <Login /> },
   { path: "/signup", element: <SignUp /> },
-  { path: "/test", element: <Test /> },
+  { path: "/room/:id", element: <Chatting /> },
 ]);
 
 function App() {
@@ -53,6 +51,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
       <RouterProvider router={router} />
+      <ToastContainer />
     </QueryClientProvider>
   );
 }

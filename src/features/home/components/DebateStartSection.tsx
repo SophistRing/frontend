@@ -59,6 +59,7 @@ const DescriptionSection = styled.div`
   height: 60px;
   gap: 10px;
   margin-top: 40px;
+  margin-left: 20px;
 `;
 const ImageContainer = styled.img`
   width: 20px;

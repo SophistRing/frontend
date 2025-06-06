@@ -48,8 +48,9 @@ const CardSection = styled.div`
 `;
 
 function MainBanner() {
-  const { data } = useGetRoom();
-  const slicedData = data.result.slice(0, 3);
+  const { data, isError } = useGetRoom();
+  const slicedData = data?.result.slice(0, 3);
+
   const navigate = useNavigate();
   return (
     <BannerContainer>
@@ -60,13 +61,19 @@ function MainBanner() {
           지금 가장 뜨거운 토론에 참여하세요
         </BannerDescription>
         <CardSection>
-          {slicedData.map((item) => (
-            <DebateCard
-              key={item.roomId}
-              data={item}
-              onClick={() => navigate(`/debate/${item.roomId}`)}
-            ></DebateCard>
-          ))}
+          {isError ? (
+            <p>데이터 미존재</p>
+          ) : (
+            <>
+              {slicedData.map((item) => (
+                <DebateCard
+                  key={item.roomId}
+                  data={item}
+                  onClick={() => navigate(`/room/${item.roomId}`)}
+                ></DebateCard>
+              ))}
+            </>
+          )}
         </CardSection>
       </BannerContentSection>
     </BannerContainer>

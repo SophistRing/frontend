@@ -13,6 +13,7 @@ import {
 import ItemCover from "@/components/ItemCover";
 import SummaryContentItem from "@/features/home/components/summary/SummaryContentItem";
 import { useNavigate } from "react-router-dom";
+import { useProfileStore } from "@/features/login/store/useProfileStore";
 
 const Container = styled.div`
   width: 100%;
@@ -57,6 +58,17 @@ const ChartBox = styled.div`
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 `;
 
+const MemberNameHeader = styled.h3`
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+`;
+
+const MemberInfo = styled.p`
+  font-size: 0.8rem;
+  color: #666;
+`;
+
 const dummyData = [
   { month: "1월", 참여: 20, 승리: 15 },
   { month: "2월", 참여: 25, 승리: 18 },
@@ -94,13 +106,16 @@ const dummyContents = [
 
 function Dashboard() {
   const navigate = useNavigate();
+  const { basicProfile } = useProfileStore();
   return (
     <Container>
       <ProfileCard>
-        <Avatar src="https://via.placeholder.com/60" alt="Profile" />
+        <Avatar src={basicProfile?.imgUrl} alt="Profile" />
         <div>
-          <h3>김토론</h3>
-          <p>토론 전문가 | 경험치 15,420 | 팔로워 1.2k</p>
+          <MemberNameHeader>{basicProfile?.memberName}</MemberNameHeader>
+          <MemberInfo>
+            레벨: {basicProfile?.level} | 경험치: {basicProfile?.exp}
+          </MemberInfo>
         </div>
       </ProfileCard>
 

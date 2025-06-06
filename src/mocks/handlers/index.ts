@@ -1,3 +1,4 @@
+import { chatHandlers } from "./chatting";
 import { commentHandlers } from "./comment";
 import { postHandlers } from "./post";
 import { profileHandlers } from "./profile";
@@ -8,4 +9,5 @@ export const handlers = [
   ...postHandlers,
   ...commentHandlers,
   ...profileHandlers,
+  ...chatHandlers,
 ];

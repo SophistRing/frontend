@@ -1,6 +1,7 @@
 import { useState } from "react";
 import CommentSector from "@/features/post/components/CommentSector";
 import styled from "styled-components";
+import { usePostStore } from "@/features/post/store/usePostStore";
 
 const DiscussionContainer = styled.div`
   width: 90%;
@@ -81,6 +82,7 @@ const ShowMoreButton = styled.button`
 `;
 
 function PostDetail() {
+  const post = usePostStore((state) => state.post);
   const postData = {
     title: "인공지능 윤리에 대한 토론",
     summary:
@@ -109,20 +111,20 @@ function PostDetail() {
     <DiscussionContainer>
       <Header>
         <Title>
-          {postData.title} ({postData.agreeNickname} vs{" "}
-          {postData.opponentNickname})
+          {post?.title} ({post?.agreeNickname} vs{" "}
+          {post?.opponentNickname})
         </Title>
       </Header>
-      <InfoContainer>{postData.finishedAt} · 참여자 238명</InfoContainer>
+      <InfoContainer>{post?.endDate} · 참여자 238명</InfoContainer>
 
       <Summary>
         <ContentTitle>토론 요약</ContentTitle>
-        {postData.summary}
+        {post?.summary}
       </Summary>
 
       <Content>
         <ContentTitle>토론 내용</ContentTitle>
-        {postData.description}
+        {post?.description}
       </Content>
 
       <ChatBox>

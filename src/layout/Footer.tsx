@@ -4,10 +4,11 @@ const FooterSection = styled.footer`
   height: 80px;
   text-align: center;
   border-top: 1px solid gray;
-  font-size: 0.7rem;
+  font-size: 1rem;
   color: white;
   background-color: black;
   width: 100%;
+  padding-top: 20px;
 `;
 
 function Footer() {

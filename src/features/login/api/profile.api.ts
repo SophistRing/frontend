@@ -6,7 +6,7 @@ import { ProfileType } from "../types/ProfileType";
 export const useSetProfile = () => {
   return useMutation({
     mutationFn: (data: ProfileType) =>
-      sendData("post", "/member/setProfile", { data }),
+      sendData("patch", "/member/setProfile", data ),
 
     // ❌ 실패 시 처리
     onError: (err: Error) => {

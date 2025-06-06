@@ -1,65 +1,33 @@
+import { useProfileStore } from "@/features/login/store/useProfileStore";
 import axios from "axios";
-import {
-  useAuthStore,
-  isTokenExpired,
-} from "@/features/login/store/useAuthStore";
-import { getTokenExpiration } from "@/utils/getTokenExpiration";
-import apiLogging from "@/utils/apiLogging";
 
-const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}`,
+const axiosInstance = axios.create({
+  baseURL: "/api/v1",
   withCredentials: true,
 });
 
-api.interceptors.request.use(
-  (config) => {
-    const { accessToken } = useAuthStore.getState();
-
-    if (accessToken && !isTokenExpired()) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
-
-api.interceptors.response.use(
-  (response) => {
-    apiLogging(response);
-    return response;
-  },
+axiosInstance.interceptors.response.use(
+  (res) => res,
   async (error) => {
-    const originalRequest = error.config;
-    const { setAccessToken, refreshToken, clearToken } =
-      useAuthStore.getState();
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
+    if (error.response?.status === 401) {
       try {
-        const { data } = await axios.post(
-          `${import.meta.env.VITE_API_URL}/login/refresh`,
+        const refreshRes = await axios.post(
+          `/member/refresh`,
           {},
-          {
-            headers: {
-              Authorization: `Bearer ${refreshToken}`,
-            },
-            withCredentials: true,
-          }
+          { withCredentials: true }
         );
 
-        const newToken = data.data.accessToken;
-        const expiredTime = getTokenExpiration(newToken);
-        setAccessToken(newToken, expiredTime || 59);
-        error.config.headers.Authorization = `Bearer ${newToken}`;
+        const newAccessToken = refreshRes.data.accessToken;
 
-        return api(error.config);
-      } catch {
-        clearToken();
-        console.error("Refresh token expired, logging out...", error);
+        error.config.headers.Authorization = `Bearer ${newAccessToken}`;
+        return await axiosInstance(error.config);
+      } catch (refreshError) {
+        useProfileStore.getState().clear();
+        return Promise.reject(refreshError);
       }
     }
     return Promise.reject(error);
   }
 );
 
-export default api;
+export default axiosInstance;

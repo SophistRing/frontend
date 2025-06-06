@@ -1,8 +1,8 @@
 import { ApiResponse } from "@/types/ApiResponse";
 
 export interface ProfileType {
-  gender: string;
   nickname: string;
+  gender: string;
   age: number;
   introduction: string;
   preferCategory: string;

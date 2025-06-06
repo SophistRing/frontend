@@ -4,6 +4,7 @@ import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { CommentResponse, CommentType } from "../types/ChatType";
 import getData from "@/api/getData";
 import deleteData from "@/api/deleteData";
+import { toast } from "react-toastify";
 
 // 댓글 가져오기
 export const useGetComment = (postId: string) => {
@@ -44,7 +45,7 @@ export const useCommentAdd = () => {
     },
 
     onError: (err, _, context) => {
-      alert(`댓글 등록 실패: ${err.message}`);
+      toast.error(`댓글 등록 실패: ${err.message}`);
       if (context?.oldData) {
         queryClient.setQueryData(["comment", context.postId], context.oldData);
       }
@@ -59,7 +60,7 @@ export const useCommentAdd = () => {
     },
 
     onSuccess: () => {
-      alert("댓글 작성 완료!");
+      toast.success("댓글 작성 완료!");
     },
   });
 };

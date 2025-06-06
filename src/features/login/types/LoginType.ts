@@ -1,18 +1,23 @@
 import { ApiResponse } from "@/types/ApiResponse";
 import { ProfileType } from "./ProfileType";
 
-export interface GoogleProfile {
-  googleId: string;
+export interface BasicProfile {
   email: string;
-  name: string;
-  givenName: string;
-  familyName: string;
-  imageUrl: string;
-}
-
-export interface LoginType extends GoogleProfile {
+  memberName: string;
+  level: number;
+  exp: number;
   isFirstLogin: boolean;
-  profile: ProfileType | null;
+  imgUrl: string;
 }
 
-export type LoginResponse = ApiResponse<LoginType>;
+export interface TokenResponse {
+  token: string;
+}
+
+export interface LoginType extends BasicProfile {
+  profileDto: ProfileType | null;
+  accessToken: TokenResponse;
+  refreshToken: TokenResponse;
+}
+
+export type LoginResponse = { data: ApiResponse<LoginType> };
