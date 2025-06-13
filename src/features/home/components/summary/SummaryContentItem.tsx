@@ -5,6 +5,8 @@ import TimeLogo from "@/assets/time.svg?react";
 const SummaryItemContainer = styled.div`
   border-top: solid #e5e7eb;
   cursor: pointer;
+  width: 600px;
+  height: 60px;
 `;
 
 const SummaryItemTitle = styled.h1`
@@ -12,6 +14,7 @@ const SummaryItemTitle = styled.h1`
   font-size: 0.8rem;
   font-weight: bold;
   text-indent: 8px;
+  margin-bottom: 10px;
 `;
 
 const SummaryDescription = styled.p`
@@ -19,6 +22,7 @@ const SummaryDescription = styled.p`
   color: #6b7280;
   font-size: 0.7rem;
   text-indent: 8px;
+  margin-bottom: 10px;
 `;
 
 const SummaryInfo = styled.div`

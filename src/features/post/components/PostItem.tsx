@@ -12,6 +12,7 @@ const ListContainer = styled.div`
     border-color: #6366f1;
     outline: none;
   }
+  cursor: pointer;
 `;
 
 const Title = styled.h2`

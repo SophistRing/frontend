@@ -5,12 +5,12 @@ import styled from "styled-components";
 const Container = styled.div`
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 20px;
   margin-top: 20px;
   min-height: 85vh;
 `;
 const CategoryContainer = styled.main`
-  width: 80%;
+  width: 83%;
 `;
 
 interface CategoryCoverProps {

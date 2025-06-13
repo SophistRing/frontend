@@ -17,14 +17,15 @@ const DeleteButtonContainer = styled.button`
 interface DeleteButtonProps {
   post: string;
   user: string;
+  roomId: string;
 }
 
-function DeleteButton({ post, user }: DeleteButtonProps) {
-  const isAuthor = user === post; // 본인 글인지 체크
+function DeleteButton({ post, user, roomId }: DeleteButtonProps) {
+  const isAuthor = user === post;
   const { mutate } = useRoomDelete();
   const onClickDelete = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    mutate("1");
+    mutate(roomId);
   };
 
   return (

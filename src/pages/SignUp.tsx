@@ -1,4 +1,7 @@
+import { useSetProfile } from "@/features/login/api/profile.api";
+import { ProfileType } from "@/features/login/types/ProfileType";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -88,24 +91,26 @@ const Button = styled.button`
   }
 `;
 
-const categoryOptions = [
-  "시사/정치",
-  "과학/기술",
-  "문화/예술",
-  "스포츠",
-  "경제",
-  "교육",
+const category = [
+  { label: "시사/정치", value: "politics" },
+  { label: "과학/기술", value: "science" },
+  { label: "문화/예술", value: "culture" },
+  { label: "스포츠", value: "sports" },
+  { label: "경제", value: "economy" },
+  { label: "교육", value: "education" },
 ];
 
 function SignUp() {
-  const [form, setForm] = useState({
-    gender: "male",
+  const [form, setForm] = useState<ProfileType>({
+    gender: "MALE",
     nickname: "",
-    age: "",
+    age: 20,
     introduction: "",
-    preferCategory: "",
+    preferCategory: "ETC",
   });
 
+  const { mutate } = useSetProfile();
+  const navigate = useNavigate();
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -120,7 +125,9 @@ function SignUp() {
   };
 
   const handleSubmit = () => {
-    console.log("회원가입 데이터:", form);
+    console.log(form);
+    mutate(form);
+    navigate("/");
   };
 
   return (
@@ -135,8 +142,8 @@ function SignUp() {
               <input
                 type="radio"
                 name="gender"
-                value="male"
-                checked={form.gender === "male"}
+                value="MALE"
+                checked={form.gender === "MALE"}
                 onChange={handleRadio}
               />
               남성
@@ -145,8 +152,8 @@ function SignUp() {
               <input
                 type="radio"
                 name="gender"
-                value="female"
-                checked={form.gender === "female"}
+                value="FEMALE"
+                checked={form.gender === "FEMALE"}
                 onChange={handleRadio}
               />
               여성
@@ -193,9 +200,9 @@ function SignUp() {
             onChange={handleChange}
           >
             <option value="">-- 선택 --</option>
-            {categoryOptions.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
+            {category.map((cat) => (
+              <option key={cat.value} value={cat.value}>
+                {cat.label}
               </option>
             ))}
           </Select>

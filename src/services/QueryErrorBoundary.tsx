@@ -2,6 +2,7 @@ import { useQueryErrorResetBoundary } from "@tanstack/react-query";
 import { ReactNode } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorIcon from "@/assets/Error.svg?react";
+import { useLocation } from "react-router-dom";
 
 export default function QueryErrorBoundary({
   children,
@@ -9,9 +10,10 @@ export default function QueryErrorBoundary({
   children: ReactNode;
 }) {
   const { reset } = useQueryErrorResetBoundary();
-
+  const location = useLocation();
   return (
     <ErrorBoundary
+      key={location.pathname}
       onReset={reset}
       fallbackRender={({ resetErrorBoundary }) => (
         <div
@@ -21,12 +23,11 @@ export default function QueryErrorBoundary({
             alignItems: "center",
             justifyContent: "center",
             height: "100%",
-            backgroundColor: "#f8f8f8",
             textAlign: "center",
           }}
         >
           <ErrorIcon
-            style={{ width: "70px", height: "auto", marginBottom: "20px" }}
+            style={{ width: "70px", height: "auto", marginTop: "200px" }}
           />
 
           <h2

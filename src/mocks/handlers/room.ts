@@ -11,6 +11,7 @@ const roomDummyresult: RoomType[] = [
     description: "료이키 테카이",
     createdAt: "2025-04-02T03:36:29.651Z",
     writer: "sfsf",
+    isShare: true,
   },
   {
     title: "title2",
@@ -21,6 +22,7 @@ const roomDummyresult: RoomType[] = [
     description: "료이키 테카이",
     createdAt: "2025-04-02T03:36:29.651Z",
     writer: "sfsf",
+    isShare: false,
   },
   {
     title: "title3",
@@ -31,6 +33,7 @@ const roomDummyresult: RoomType[] = [
     description: "료이키 테카이",
     createdAt: "2025-04-02T03:36:29.651Z",
     writer: "sfsf",
+    isShare: true,
   },
 ];
 const categoryDummyresult: RoomType[] = [
@@ -43,8 +46,23 @@ const categoryDummyresult: RoomType[] = [
     description: "료이키 테카이",
     createdAt: "2025-04-02T03:36:29.651Z",
     writer: "sfsf",
+    isShare: false,
   },
 ];
+
+const dummyDetailRoom = {
+  title: "AI 시대의 윤리",
+  timer: 300,
+  category: "TECH",
+  status: "WAITING",
+  roomId: "room12345",
+  agreePerson: "홍길동",
+  disagreePerson: "김철수",
+  writer: "이영희",
+  createdAt: "2025-04-23T15:00:00.000Z",
+  description:
+    "AI 기술의 발전이 인간 사회에 미치는 영향과 윤리적 기준에 대해 토론합니다.",
+};
 
 export const roomHandlers = [
   //유저 정보 가져오기기
@@ -53,6 +71,13 @@ export const roomHandlers = [
       result: roomDummyresult,
     });
   }),
+
+  http.get(`${import.meta.env.VITE_API_URL}/room/4`, () => {
+    return HttpResponse.json({
+      result: dummyDetailRoom,
+    });
+  }),
+
   http.get(`${import.meta.env.VITE_API_URL}/room/category?debate`, () => {
     return HttpResponse.json({
       result: categoryDummyresult,
@@ -71,4 +96,16 @@ export const roomHandlers = [
       message: "채팅방을 삭제했습니다.",
     });
   }),
+
+  http.post(
+    `${import.meta.env.VITE_API_URL}/room/enter`,
+    async ({ request }) => {
+      const result = await request.json();
+
+      return HttpResponse.json({
+        message: "입장 성공.",
+        result: result,
+      });
+    }
+  ),
 ];

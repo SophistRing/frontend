@@ -1,6 +1,6 @@
 import { ApiResponse } from "@/types/ApiResponse";
-import { AxiosError, AxiosRequestConfig } from "axios";
-import api from ".";
+import axios, { AxiosRequestConfig } from "axios";
+import axiosInstance from ".";
 
 /**
  *
@@ -20,13 +20,13 @@ async function sendData<T>(
     let response;
     switch (method) {
       case "post":
-        response = await api.post<ApiResponse<T>>(url, data, config);
+        response = await axiosInstance.post<ApiResponse<T>>(url, data, config);
         break;
       case "put":
-        response = await api.put<ApiResponse<T>>(url, data, config);
+        response = await axiosInstance.put<ApiResponse<T>>(url, data, config);
         break;
       case "patch":
-        response = await api.patch<ApiResponse<T>>(url, data, config);
+        response = await axiosInstance.patch<ApiResponse<T>>(url, data, config);
         break;
       default:
         throw new Error(`Unsupported method: ${method}`);
@@ -35,8 +35,8 @@ async function sendData<T>(
   } catch (error) {
     console.error(method, error);
 
-    if (error instanceof AxiosError) {
-      throw new Error(error.message || `${method} 요청 실패`);
+    if (axios.isAxiosError(error)) {
+      throw error;
     }
 
     throw new Error(`${method}: Unknown error occurred`);

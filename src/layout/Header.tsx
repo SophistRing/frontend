@@ -1,7 +1,8 @@
 import styled, { css } from "styled-components";
-import DummyLogo from "@/assets/dummyLogo.svg?react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import DummyProfile from "@/assets/dummyLogo.svg?react";
+import useProfileStore from "@/features/login/store/useProfileStore";
+import axiosInstance from "@/api";
+import sophistIcon from "@/assets/sophist.png";
 
 const HeaderSection = styled.header`
   border-bottom: 1px solid gray;
@@ -16,18 +17,46 @@ const HeaderSection = styled.header`
 `;
 
 const LoginButton = styled(Link)`
-  width: 40px;
-  height: 15px;
+  width: 60px;
+  height: 25px;
   background-color: black;
   color: white;
   border: none;
-  font-size: 0.5rem;
+  font-size: 0.8rem;
   text-align: center;
   text-decoration: none;
-  padding-top: 5px;
-  border-radius: 2px;
-  margin-right: 10px;
+  padding-top: 12px;
+  border-radius: 5px;
+  margin-right: 15px;
 `;
+
+const LogOutButton = styled.button`
+  width: 60px;
+  height: 25px;
+  background-color: red;
+  color: white;
+  border-radius: 5px;
+  border: none;
+  font-size: 0.7rem;
+  text-align: center;
+  text-decoration: none;
+  margin-right: 15px;
+  cursor: pointer;
+`;
+
+const ProfileButton = styled.button`
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+`;
+
+const HeaderButtonSection = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+`;
+
 const NavigationSection = styled.div`
   display: flex;
   flex-direction: row;
@@ -47,18 +76,33 @@ const NavigateButton = styled.button<{ active?: boolean }>`
   ${(props) =>
     props.active &&
     css`
-      border-bottom: 1px solid black;
+      border-bottom: 2px solid black;
     `}
+
+  cursor: pointer;
 `;
 
 function Header() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const basicProfile = useProfileStore((state) => state.basicProfile);
+  console.log("basicProfile", basicProfile);
+
+  const handleLogOut = async () => {
+    try {
+      await axiosInstance.post("/member/logout");
+      useProfileStore.getState().clear();
+      navigate("/");
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+  };
+
   return (
     <HeaderSection>
       <NavigationSection>
-        <DummyLogo onClick={() => navigate("/")} />
+        <img src={sophistIcon} alt="logo" width={50} height={50} />
         <NavigateButton
           onClick={() => navigate("/debate")}
           active={location.pathname === "/debate"}
@@ -78,8 +122,21 @@ function Header() {
           홈
         </NavigateButton>
       </NavigationSection>
-      <DummyProfile onClick={() => navigate("/dashboard")} />
-      <LoginButton to={"/login"}>로그인</LoginButton>
+
+      {basicProfile ? (
+        <HeaderButtonSection>
+          <ProfileButton onClick={() => navigate("/dashboard")}>
+            <img
+              src={basicProfile.imgUrl || "/src/assets/profile.png"}
+              alt="profile"
+              style={{ width: "30px", height: "30px", borderRadius: "50%" }}
+            />
+          </ProfileButton>
+          <LogOutButton onClick={handleLogOut}>로그아웃</LogOutButton>
+        </HeaderButtonSection>
+      ) : (
+        <LoginButton to={"/login"}>로그인</LoginButton>
+      )}
     </HeaderSection>
   );
 }

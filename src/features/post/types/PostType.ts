@@ -9,5 +9,8 @@ export interface PostType {
   agreeNickname: string;
   opponentNickname: string;
   whoiswin: string;
+  summary: string;
 }
+
+
 export type PostResponse = ApiResponse<PostType[]>;

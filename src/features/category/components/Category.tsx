@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { useState } from "react";
-import DebateModal from "../../../components/DebateModal";
+import DebateModal from "@/components/DebateModal";
 import useCategoryStore from "../store/useCategoryStore";
 
 const CategorySection = styled.aside`
-  width: 15vw;
+  width: 200px;
   display: flex;
   flex-direction: column;
 `;
@@ -15,7 +15,6 @@ const CategoryContents = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 5px;
-
 `;
 
 const CategorySelectButton = styled.button<{ selected: boolean }>`
@@ -28,13 +27,16 @@ const CategorySelectButton = styled.button<{ selected: boolean }>`
   background-color: ${({ selected }) =>
     selected ? "#4b5563" : "rgba(0, 0, 0, 0)"};
   color: ${({ selected }) => (selected ? "white" : "black")};
+  cursor: pointer;
 `;
 
 const CategoryTitle = styled.p`
   color: #111827;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
+  margin-top: 5px;
   font-weight: bold;
   text-indent: 8px;
+
   padding-bottom: 10px;
   border-bottom: solid #e5e7eb;
 `;
@@ -50,12 +52,12 @@ const CategoryCreateButton = styled.button`
 `;
 
 const category = [
-  { label: "시사/정치", value: "debate" },
-  { label: "과학/기술", value: "debate" },
-  { label: "문화/예술", value: "debate" },
-  { label: "스포츠", value: "debate" },
-  { label: "경제", value: "debate" },
-  { label: "교육", value: "debate" },
+  { label: "시사/정치", value: "politics" },
+  { label: "과학/기술", value: "science" },
+  { label: "문화/예술", value: "culture" },
+  { label: "스포츠", value: "sports" },
+  { label: "경제", value: "economy" },
+  { label: "교육", value: "education" },
 ];
 
 function Category() {

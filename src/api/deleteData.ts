@@ -1,6 +1,6 @@
 import { ApiResponse } from "@/types/ApiResponse";
-import { AxiosError, AxiosRequestConfig } from "axios";
-import api from ".";
+import axios, { AxiosRequestConfig } from "axios";
+import axiosInstance from ".";
 
 /**
  *
@@ -14,13 +14,13 @@ const deleteData = async <T>(
   config?: AxiosRequestConfig
 ): Promise<ApiResponse<T>> => {
   try {
-    const { data } = await api.delete<ApiResponse<T>>(url, config);
+    const { data } = await axiosInstance.delete<ApiResponse<T>>(url, config);
     return data;
   } catch (error) {
     console.error(error);
 
-    if (error instanceof AxiosError) {
-      throw new Error(error.message || "API 요청 실패");
+    if (axios.isAxiosError(error)) {
+      throw error; 
     }
 
     throw new Error("Unknown error occurred");

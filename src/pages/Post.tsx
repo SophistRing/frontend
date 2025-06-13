@@ -5,11 +5,13 @@ import CategoryCover from "@/components/CategoryCover";
 
 import { useGetPost } from "@/features/post/query/post.query";
 import PostItem from "@/features/post/components/PostItem";
+import { usePostStore } from "@/features/post/store/usePostStore";
 
 function Post() {
   const navigate = useNavigate();
   const selectedCategory = useCategoryStore((state) => state.selectedCategory);
   const { data } = useGetPost(selectedCategory);
+  const setPost = usePostStore((state) => state.setPost);
 
   return (
     <>
@@ -19,7 +21,10 @@ function Post() {
             <PostItem
               key={debate.postId}
               {...debate}
-              onClick={() => navigate(`${debate.postId}`)}
+              onClick={() => {
+                navigate(`${debate.postId}`);
+                setPost(debate);
+              }}
             />
           ))}
         </ItemCover>

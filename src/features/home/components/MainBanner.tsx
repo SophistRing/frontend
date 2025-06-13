@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import DebateCard from "./HomeBannreCard";
 import banner from "@/assets/banner.png";
-import { useGetRoom } from "@/features/debate/query/room.query";
+import { useGetRoomAll } from "@/features/debate/query/room.query";
+import { useNavigate } from "react-router-dom";
 
 const BannerContainer = styled.div`
   display: flex;
@@ -28,6 +29,7 @@ const BannerTitle = styled.h1`
   font-size: xx-large;
   color: white;
   text-align: center;
+  margin-bottom: 20px;
 `;
 const BannerDescription = styled.h3`
   font-size: smaller;
@@ -46,8 +48,10 @@ const CardSection = styled.div`
 `;
 
 function MainBanner() {
-  const { data } = useGetRoom();
-  const slicedData = data.result.slice(0, 3);
+  const { data, isError } = useGetRoomAll();
+  const slicedData = data?.result.length > 3 ? data?.result.slice(0, 3) : data?.result;
+
+  const navigate = useNavigate();
   return (
     <BannerContainer>
       <BannerImg src={banner} alt="banner" />
@@ -57,9 +61,20 @@ function MainBanner() {
           지금 가장 뜨거운 토론에 참여하세요
         </BannerDescription>
         <CardSection>
-          {slicedData.map((item) => (
-            <DebateCard data={item}></DebateCard>
-          ))}
+          {isError ? (
+            <p>데이터 미존재</p>  
+          ) : (
+            <>
+              {slicedData &&
+                slicedData.map((item) => (
+                  <DebateCard
+                    key={item.roomId}
+                    data={item}
+                    onClick={() => navigate(`/room/${item.roomId}`)}
+                  ></DebateCard>
+                ))}
+            </>
+          )}
         </CardSection>
       </BannerContentSection>
     </BannerContainer>

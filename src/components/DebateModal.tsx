@@ -81,24 +81,25 @@ interface DebateModalProps {
 }
 
 const category = [
-  { label: "시사/정치", value: "debate" },
-  { label: "과학/기술", value: "debate" },
-  { label: "문화/예술", value: "debate" },
-  { label: "스포츠", value: "debate" },
-  { label: "경제", value: "debate" },
-  { label: "교육", value: "debate" },
+  { label: "시사/정치", value: "politics" },
+  { label: "과학/기술", value: "science" },
+  { label: "문화/예술", value: "culture" },
+  { label: "스포츠", value: "sports" },
+  { label: "경제", value: "economy" },
+  { label: "교육", value: "education" },
 ];
 
 function DebateModal({ onClose }: DebateModalProps) {
   const [formData, setFormData] = useState<RoomMakeType>({
     title: "",
-    category: "",
+    category: "politics",
     timer: 10,
     isShare: true,
     password: "",
     isApproval: true,
     description: "",
   });
+
   const { mutate } = useRoomAdd();
 
   const handleInputChange = (

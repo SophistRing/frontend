@@ -1,5 +1,10 @@
+import { useState } from "react";
 import styled from "styled-components";
 import DeleteButton from "./DeleteButton";
+import { useRoomEnter } from "../query/room.query";
+import useSocket from "@/features/chatting/hooks/useSocket";
+import useProfileStore from "@/features/login/store/useProfileStore";
+import { queryClient } from "@/services/TanstackQueryStore";
 
 const ChatItemContainer = styled.div`
   display: flex;
@@ -59,7 +64,6 @@ const Info = styled.div`
   gap: 10px;
   width: 100%;
   flex-direction: row;
-  display: flex;
   justify-content: space-between;
   align-items: center;
 `;
@@ -74,6 +78,14 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
+const PasswordInput = styled.input`
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  margin-right: 10px;
+`;
+
 interface ChatRoomItemProps {
   title: string;
   description: string;
@@ -81,13 +93,15 @@ interface ChatRoomItemProps {
   date: string;
   timer: number;
   status: string;
-  onClick: () => void;
+  isShare: boolean;
+  roomId: string;
+  category: string;
 }
 
 const statusConfig = {
   WAITING: { color: "#FBBF24", text: "대기중" },
-  processing: { color: "#34D399", text: "진행중" },
-  finish: { color: "#EF4444", text: "완료" },
+  START: { color: "#34D399", text: "진행중" },
+  FINISH: { color: "#EF4444", text: "완료" },
 };
 
 function formatDate(dateString: string): string {
@@ -108,33 +122,92 @@ function ChatRoomItem({
   date,
   timer,
   status,
-  onClick,
+  isShare,
+  roomId,
+  category,
 }: ChatRoomItemProps) {
+  const [showPasswordInput, setShowPasswordInput] = useState(false);
+  const [password, setPassword] = useState("");
+
+  const { mutate } = useRoomEnter(roomId);
+  const { stompHandler } = useSocket();
+  const { profile } = useProfileStore();
+
   const statusInfo = statusConfig[status as keyof typeof statusConfig] || {
     color: "#D1D5DB",
     text: "알 수 없음",
   };
 
+  interface enterType {
+    roomId: string;
+    password?: string;
+  }
+
+  const onClick = ({ roomId, password }: enterType) => {
+    stompHandler.connect(roomId);
+    mutate({ roomId, password: password ? password : null });
+    queryClient.invalidateQueries({
+      queryKey: ["room", roomId],
+    });
+  };
+
+  const handleJoinClick = () => {
+    if (isShare) {
+      onClick({ roomId, password });
+    } else {
+      setShowPasswordInput(true);
+    }
+  };
+
+  const handlePasswordSubmit = () => {
+    onClick({ roomId, password });
+    setPassword("");
+    setShowPasswordInput(false);
+  };
+
   return (
-    <ChatItemContainer>
-      <Tags>
-        <Spans>
-          <Tag color="#6366F1">ETC</Tag>
-          <Tag color={statusInfo.color}>{statusInfo.text}</Tag>
-        </Spans>
-        <DeleteButton post="f" user="f" />
-      </Tags>
-      <Title>{title}</Title>
-      <Description>{description}</Description>
-      <Info>
-        <Spans>
-          <span>👤사용자: {writer}</span>
-          <span>⌛제한 시간: {timer}분</span>
-          <span>{formatDate(date)}</span>
-        </Spans>
-        <Button onClick={onClick}>참여하기</Button>
-      </Info>
-    </ChatItemContainer>
+    <>
+      {status === "WAITING" || status === "START" ? (
+        <ChatItemContainer>
+          <Tags>
+            <Spans>
+              <Tag color="#6366F1">{category}</Tag>
+              <Tag color={statusInfo.color}>{statusInfo.text}</Tag>
+              {!isShare && <Tag color="#f25146">비공개</Tag>}
+            </Spans>
+            <DeleteButton
+              post={writer}
+              user={profile?.nickname || ""}
+              roomId={roomId}
+            />
+          </Tags>
+
+          <Title>{title}</Title>
+          <Description>{description}</Description>
+
+          <Info>
+            <Spans>
+              <span>👤사용자: {writer}</span>
+              <span>⌛제한 시간: {timer}분</span>
+              <span>{formatDate(date)}</span>
+            </Spans>
+            {showPasswordInput ? (
+              <div>
+                <PasswordInput
+                  type="password"
+                  placeholder="비밀번호 입력"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <Button onClick={handlePasswordSubmit}>입장</Button>
+              </div>
+            ) : (
+              <Button onClick={handleJoinClick}>참여하기</Button>
+            )}
+          </Info>
+        </ChatItemContainer>
+      ) : null}
+    </>
   );
 }
 
