@@ -18,15 +18,16 @@ function Home() {
     <>
       <>
         <MainBanner />
-        {data.result.map((debate) => (
-          <Section>
-            <PostCard
-              key={debate.postId}
-              {...debate}
-              onClick={() => navigate(`/post/${debate.postId}`)}
-            />
-          </Section>
-        ))}
+        {data.result.length > 0 &&
+          data.result.map((debate) => (
+            <Section>
+              <PostCard
+                key={debate.postId}
+                {...debate}
+                onClick={() => navigate(`/post/${debate.postId}`)}
+              />
+            </Section>
+          ))}
         <DebateStartSection />
       </>
     </>

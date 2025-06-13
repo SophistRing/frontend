@@ -11,4 +11,6 @@ export interface PostType {
   whoiswin: string;
   summary: string;
 }
+
+
 export type PostResponse = ApiResponse<PostType[]>;

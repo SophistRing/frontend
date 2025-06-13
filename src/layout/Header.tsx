@@ -1,8 +1,8 @@
 import styled, { css } from "styled-components";
-import DummyLogo from "@/assets/dummyLogo.svg?react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useProfileStore } from "@/features/login/store/useProfileStore";
+import useProfileStore from "@/features/login/store/useProfileStore";
 import axiosInstance from "@/api";
+import sophistIcon from "@/assets/sophist.png";
 
 const HeaderSection = styled.header`
   border-bottom: 1px solid gray;
@@ -26,7 +26,7 @@ const LoginButton = styled(Link)`
   text-align: center;
   text-decoration: none;
   padding-top: 12px;
-  border-radius: 5px; 
+  border-radius: 5px;
   margin-right: 15px;
 `;
 
@@ -102,10 +102,7 @@ function Header() {
   return (
     <HeaderSection>
       <NavigationSection>
-        <DummyLogo
-          style={{ marginLeft: "15px" }}
-          onClick={() => navigate("/")}
-        />
+        <img src={sophistIcon} alt="logo" width={50} height={50} />
         <NavigateButton
           onClick={() => navigate("/debate")}
           active={location.pathname === "/debate"}

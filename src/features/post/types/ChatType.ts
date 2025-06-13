@@ -1,8 +1,8 @@
 import { ApiResponse } from "@/types/ApiResponse";
 
-export interface CommentType {
-  comment: string;
-  writer: string;
+export interface ChatType {
+  message: string;
+  sender: string;
   createdAt: string;
 }
-export type CommentResponse = ApiResponse<CommentType[]>;
+export type ChatResponse = ApiResponse<ChatType[]>;

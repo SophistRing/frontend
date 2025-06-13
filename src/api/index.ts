@@ -1,4 +1,4 @@
-import { useProfileStore } from "@/features/login/store/useProfileStore";
+import useProfileStore from "@/features/login/store/useProfileStore";
 import axios from "axios";
 
 const axiosInstance = axios.create({
@@ -9,23 +9,20 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.response.use(
   (res) => res,
   async (error) => {
-    if (error.response?.status === 401) {
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
       try {
-        const refreshRes = await axios.post(
-          `/member/refresh`,
-          {},
-          { withCredentials: true }
-        );
-
-        const newAccessToken = refreshRes.data.accessToken;
-
-        error.config.headers.Authorization = `Bearer ${newAccessToken}`;
-        return await axiosInstance(error.config);
+        await axios.post(`/api/v1/refresh`, {}, { withCredentials: true });
+        return axiosInstance(originalRequest);
       } catch (refreshError) {
         useProfileStore.getState().clear();
         return Promise.reject(refreshError);
       }
     }
+
     return Promise.reject(error);
   }
 );

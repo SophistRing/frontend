@@ -1,6 +1,6 @@
 const googleClientId = import.meta.env.VITE_APP_GOOGLE_AUTH_CLIENT_ID;
 const googleRedirectUrl = import.meta.env.VITE_APP_GOOGLE_AUTH_REDIRECT_URI;
-//const googleScope = "https://www.googleapis.com/auth/drive.metadata.readonly";
+
 const googleScope = "email profile";
 
 const params = new URLSearchParams({

@@ -2,6 +2,8 @@ import { useState } from "react";
 import CommentSector from "@/features/post/components/CommentSector";
 import styled from "styled-components";
 import { usePostStore } from "@/features/post/store/usePostStore";
+import { useGetPostDetail } from "@/features/post/query/post.query";
+import useCustomParams from "@/utils/useCustomParams";
 
 const DiscussionContainer = styled.div`
   width: 90%;
@@ -20,13 +22,6 @@ const Header = styled.div`
   margin-bottom: 10px;
 `;
 
-const InfoContainer = styled.p`
-  font-weight: normal;
-  color: #6b7280;
-  font-size: 0.9rem;
-  margin-bottom: 20px;
-`;
-
 const Title = styled.h2`
   font-size: 1.5rem;
   font-weight: bold;
@@ -37,6 +32,9 @@ const Summary = styled.div`
   background: #f9fafb;
   border-radius: 10px;
   margin-bottom: 25px;
+
+  line-height: 1.8; // 줄 간격
+  letter-spacing: 0.5px; // 글자 간격
 `;
 
 const ContentTitle = styled.h2`
@@ -82,40 +80,19 @@ const ShowMoreButton = styled.button`
 `;
 
 function PostDetail() {
+  const postId = useCustomParams();
+  const { data } = useGetPostDetail(postId);
   const post = usePostStore((state) => state.post);
-  const postData = {
-    title: "인공지능 윤리에 대한 토론",
-    summary:
-      "인공지능의 발전에 따른 윤리적 문제와 규제 방안에 대한 토론입니다.",
-    description: `인공지능의 윤리적 측면에서 가장 중요한 것은 투명성과 책임성입니다.\n이에 대한 규제를 어떤 식으로 적용해야 할지에 대한 논의가 활발히 진행 중입니다.`,
-    finishedAt: "2024-02-15",
-    agreeNickname: "mm",
-    opponentNickname: "mm2",
-    winner: "mm2",
-    chats: [
-      { sender: "asdf", message: "첫 번째 메시지입니다." },
-      { sender: "qwer", message: "두 번째 메시지입니다." },
-      { sender: "zxcv", message: "세 번째 메시지입니다." },
-      { sender: "user1", message: "네 번째 메시지입니다." },
-      { sender: "user2", message: "다섯 번째 메시지입니다." },
-      { sender: "user3", message: "여섯 번째 메시지입니다." },
-    ],
-  };
 
   const [showAllChats, setShowAllChats] = useState(false);
-  const visibleChats = showAllChats
-    ? postData.chats
-    : postData.chats.slice(0, 3);
 
   return (
     <DiscussionContainer>
       <Header>
         <Title>
-          {post?.title} ({post?.agreeNickname} vs{" "}
-          {post?.opponentNickname})
+          {post?.title} ({post?.agreeNickname} vs {post?.opponentNickname})
         </Title>
       </Header>
-      <InfoContainer>{post?.endDate} · 참여자 238명</InfoContainer>
 
       <Summary>
         <ContentTitle>토론 요약</ContentTitle>
@@ -129,13 +106,13 @@ function PostDetail() {
 
       <ChatBox>
         <ContentTitle>채팅 기록</ContentTitle>
-        {visibleChats.map((chat, idx) => (
+        {data?.result.map((chat, idx) => (
           <Chat key={idx}>
             <Sender>{chat.sender}:</Sender>
             {chat.message}
           </Chat>
         ))}
-        {postData.chats.length > 3 && (
+        {data?.result.length > 3 && (
           <ShowMoreButton onClick={() => setShowAllChats(!showAllChats)}>
             {showAllChats ? "접기" : "채팅 더보기"}
           </ShowMoreButton>

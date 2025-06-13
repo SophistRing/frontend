@@ -3,7 +3,8 @@ import styled from "styled-components";
 import DeleteButton from "./DeleteButton";
 import { useRoomEnter } from "../query/room.query";
 import useSocket from "@/features/chatting/hooks/useSocket";
-import { useProfileStore } from "@/features/login/store/useProfileStore";
+import useProfileStore from "@/features/login/store/useProfileStore";
+import { queryClient } from "@/services/TanstackQueryStore";
 
 const ChatItemContainer = styled.div`
   display: flex;
@@ -94,12 +95,13 @@ interface ChatRoomItemProps {
   status: string;
   isShare: boolean;
   roomId: string;
+  category: string;
 }
 
 const statusConfig = {
   WAITING: { color: "#FBBF24", text: "대기중" },
-  processing: { color: "#34D399", text: "진행중" },
-  finish: { color: "#EF4444", text: "완료" },
+  START: { color: "#34D399", text: "진행중" },
+  FINISH: { color: "#EF4444", text: "완료" },
 };
 
 function formatDate(dateString: string): string {
@@ -122,6 +124,7 @@ function ChatRoomItem({
   status,
   isShare,
   roomId,
+  category,
 }: ChatRoomItemProps) {
   const [showPasswordInput, setShowPasswordInput] = useState(false);
   const [password, setPassword] = useState("");
@@ -143,6 +146,9 @@ function ChatRoomItem({
   const onClick = ({ roomId, password }: enterType) => {
     stompHandler.connect(roomId);
     mutate({ roomId, password: password ? password : null });
+    queryClient.invalidateQueries({
+      queryKey: ["room", roomId],
+    });
   };
 
   const handleJoinClick = () => {
@@ -160,44 +166,48 @@ function ChatRoomItem({
   };
 
   return (
-    <ChatItemContainer>
-      <Tags>
-        <Spans>
-          <Tag color="#6366F1">ETC</Tag>
-          <Tag color={statusInfo.color}>{statusInfo.text}</Tag>
-          {!isShare && <Tag color="#f25146">비공개</Tag>}
-        </Spans>
-        <DeleteButton
-          post={writer}
-          user={profile?.nickname || ""}
-          roomId={roomId}
-        />
-      </Tags>
-
-      <Title>{title}</Title>
-      <Description>{description}</Description>
-
-      <Info>
-        <Spans>
-          <span>👤사용자: {writer}</span>
-          <span>⌛제한 시간: {timer}분</span>
-          <span>{formatDate(date)}</span>
-        </Spans>
-        {showPasswordInput ? (
-          <div>
-            <PasswordInput
-              type="password"
-              placeholder="비밀번호 입력"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+    <>
+      {status === "WAITING" || status === "START" ? (
+        <ChatItemContainer>
+          <Tags>
+            <Spans>
+              <Tag color="#6366F1">{category}</Tag>
+              <Tag color={statusInfo.color}>{statusInfo.text}</Tag>
+              {!isShare && <Tag color="#f25146">비공개</Tag>}
+            </Spans>
+            <DeleteButton
+              post={writer}
+              user={profile?.nickname || ""}
+              roomId={roomId}
             />
-            <Button onClick={handlePasswordSubmit}>입장</Button>
-          </div>
-        ) : (
-          <Button onClick={handleJoinClick}>참여하기</Button>
-        )}
-      </Info>
-    </ChatItemContainer>
+          </Tags>
+
+          <Title>{title}</Title>
+          <Description>{description}</Description>
+
+          <Info>
+            <Spans>
+              <span>👤사용자: {writer}</span>
+              <span>⌛제한 시간: {timer}분</span>
+              <span>{formatDate(date)}</span>
+            </Spans>
+            {showPasswordInput ? (
+              <div>
+                <PasswordInput
+                  type="password"
+                  placeholder="비밀번호 입력"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <Button onClick={handlePasswordSubmit}>입장</Button>
+              </div>
+            ) : (
+              <Button onClick={handleJoinClick}>참여하기</Button>
+            )}
+          </Info>
+        </ChatItemContainer>
+      ) : null}
+    </>
   );
 }
 

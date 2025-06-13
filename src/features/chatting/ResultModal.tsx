@@ -16,12 +16,6 @@ const Title = styled.h2`
   margin-bottom: 10px;
 `;
 
-const SubTitle = styled.p`
-  font-size: 16px;
-  color: gray;
-  margin-bottom: 15px;
-`;
-
 const TeamBox = styled.div`
   background: #f5f5f5;
   width: 100%;
@@ -103,25 +97,23 @@ function ResultModal({ onClose }: WinModalProps) {
     <ModalCover onClose={onClose}>
       <Container>
         <Title>승리</Title>
-        <SubTitle>승리 팀</SubTitle>
         <TeamBox>
-          <TeamName>팀 A</TeamName>
+          <TeamName>test</TeamName>
           <PlayerList>
-            <span>player1</span>
-            <span>player2</span>
-            <span>player3</span>
+            <span>test</span>
+            <span>sins051301</span>
           </PlayerList>
         </TeamBox>
         <Points>
-          <span className="total">1250</span>
+          <span className="total">0</span>
           <span className="gain">+25</span>
         </Points>
         <ProgressWrapper>
-          <span>레벨 5</span>
+          <span>레벨 0</span>
           <ProgressBar>
             <ProgressFill />
           </ProgressBar>
-          <span>다음 레벨까지 230 포인트</span>
+          <span>다음 레벨까지 20 포인트</span>
         </ProgressWrapper>
         <ConfirmButton onClick={() => navigate("/")}>확인</ConfirmButton>
       </Container>

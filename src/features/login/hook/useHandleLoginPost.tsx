@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useCallback, useEffect } from "react";
 import useToastNavigate from "./useToastNavigate";
-import { useProfileStore } from "../store/useProfileStore";
+import useProfileStore from "../store/useProfileStore";
 import { LoginType } from "../types/LoginType";
 
 function useHandleLoginPost() {

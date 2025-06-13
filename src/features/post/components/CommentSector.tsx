@@ -48,7 +48,7 @@ function CommentSector() {
   const postId = useCustomParams();
 
   const { data } = useGetComment(postId);
-  const { mutate } = useCommentAdd();
+  const { mutate } = useCommentAdd(postId);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setUserComment(e.target.value);
@@ -57,19 +57,15 @@ function CommentSector() {
   const handleSubmit = () => {
     if (!userComment.trim()) return;
 
-    mutate(
-      { postId, comment: userComment },
-      {
-        onSuccess: () => {
-          setUserComment("");
-        },
-      }
-    );
+    mutate({ comment: userComment });
+    setUserComment("");
   };
 
   return (
     <CommentsSection>
-      <CommentTitle>댓글 ({data.result.length || 0})</CommentTitle>
+      <CommentTitle>
+        댓글 ({(data.result && data?.result.length) || 0})
+      </CommentTitle>
 
       <CommentInputContainer>
         <CommentInput
@@ -81,9 +77,12 @@ function CommentSector() {
       </CommentInputContainer>
 
       {data?.result &&
-        data.result.map((comment, index) => (
-          <CommentItem key={index} {...comment} />
-        ))}
+        [...data.result]
+          .sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          )
+          .map((comment, index) => <CommentItem key={index} {...comment} postId={postId}/>)}
     </CommentsSection>
   );
 }

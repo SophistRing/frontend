@@ -11,7 +11,7 @@ interface UserStore {
   clear: () => void;
 }
 
-export const useProfileStore = create<UserStore>()(
+const useProfileStore = create<UserStore>()(
   persist(
     (set) => ({
       basicProfile: null,
@@ -25,3 +25,4 @@ export const useProfileStore = create<UserStore>()(
     }
   )
 );
+export default useProfileStore;

@@ -2,18 +2,19 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import ExitIcon from "@/assets/exit.svg?react";
 import useSocket from "../hooks/useSocket";
-import { useNavigate } from "react-router-dom";
 import { useChatRoomStore } from "../store/useChatRoomStore";
+import axiosInstance from "@/api";
+import { useMessageStore } from "../store/useMessageStore";
+import ResultModal from "../ResultModal";
 
 const DebateCard = styled.div`
-  width: 90vw;
-  padding: 1rem 1.5rem;
+  padding: 1rem 1.2rem;
   border-radius: 12px;
   background-color: #ffffff;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   gap: 1rem;
   border: 1px solid #e5e7eb;
 `;
@@ -40,7 +41,7 @@ const TitleSection = styled.div`
 const Tag = styled.span`
   background-color: black;
   color: white;
-  font-size: 0.75rem;
+  font-size: 0.6rem;
   padding: 0.2rem 0.5rem;
   border-radius: 5px;
   display: inline-block;
@@ -49,24 +50,24 @@ const Tag = styled.span`
 `;
 
 const Title = styled.h2`
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 600;
   margin-bottom: 10px;
 `;
 
 const Description = styled.p`
-  font-size: 1rem;
+  font-size: 0.85rem;
   margin-bottom: 10px;
 `;
 
 const Author = styled.span`
-  font-size: 0.9rem;
+  font-size: 0.6rem;
   color: #555;
   margin-bottom: 10px;
 `;
 
 const Timer = styled.div`
-  font-size: 1.1rem;
+  font-size: 0.8rem;
   font-weight: bold;
   text-align: right;
 `;
@@ -77,8 +78,9 @@ const VoteSection = styled.div`
 `;
 
 const VoteButton = styled.button<{ type: "pro" | "con" }>`
-  padding: 0.5rem 1rem;
+  padding: 0.5rem;
   border-radius: 10px;
+  font-size: 0.6rem;
   font-weight: 500;
   background-color: ${({ type }) => (type === "pro" ? "#e6edff" : "#ffe6e6")};
   color: ${({ type }) => (type === "pro" ? "#2f5fd2" : "#d23c3c")};
@@ -93,8 +95,8 @@ const BottomActions = styled.div`
 `;
 
 const ActionButton = styled.button`
-  padding: 0.4rem 0.8rem;
-  font-size: 0.85rem;
+  padding: 0.4rem;
+  font-size: 0.6rem;
   border-radius: 8px;
   border: 1px solid #ccc;
   background-color: #f8f8f8;
@@ -124,21 +126,24 @@ function formatTime(seconds: number): string {
 function TopCard() {
   const data = useChatRoomStore((state) => state.currentRoom);
 
+  const clearMessages = useMessageStore((state) => state.clearMessages);
   const [timeLeft, setTimeLeft] = useState(0);
+  const messages = useMessageStore((state) => state.messages);
   const { stompHandler } = useSocket();
-  const navigate = useNavigate();
-
+  const adminEntered = messages.some((msg) => msg.sender === "admin");
+  const [open, setOpen] = useState(false);
   const onClick = () => {
     stompHandler.disconnect();
-    navigate("/");
+    clearMessages();
+    axiosInstance.patch(`/room/finish`, { roomId: data?.roomId });
+    setOpen(true);
   };
 
-  // ⏱️ 초 단위로 변환하여 세팅
   useEffect(() => {
-    if (data?.timer) {
-      setTimeLeft(data.timer * 60); // 분 → 초 변환
+    if (data?.timer && adminEntered) {
+      setTimeLeft(data.timer * 60);
     }
-  }, [data]);
+  }, [data?.timer, adminEntered]);
 
   useEffect(() => {
     if (timeLeft <= 0) return;
@@ -159,33 +164,36 @@ function TopCard() {
   if (!data) return null;
 
   return (
-    <DebateCard>
-      <TopRow>
-        <TitleSection>
-          <Tag>{data.category}</Tag>
-          <Title>{data.title}</Title>
-          <Description>{data.description}</Description>
-          <Author>작성자: {data.writer}</Author>
-        </TitleSection>
-        <Timer>
-          {formatTime(timeLeft)}
-          <br />
-          남은 시간
-        </Timer>
-      </TopRow>
-      <BottomRow>
-        <VoteSection>
-          <VoteButton type="pro">찬성: {data.agreePerson}</VoteButton>
-          <VoteButton type="con">반대: {data.disagreePerson}</VoteButton>
-        </VoteSection>
-        <BottomActions>
-          <ActionButton onClick={onClick}>
-            <ExitIcon style={{ marginRight: "10px" }} />
-            나가기
-          </ActionButton>
-        </BottomActions>
-      </BottomRow>
-    </DebateCard>
+    <>
+      <DebateCard>
+        <TopRow>
+          <TitleSection>
+            <Tag>{data.category}</Tag>
+            <Title>{data.title}</Title>
+            <Description>{data.description}</Description>
+            <Author>작성자: {data.writer}</Author>
+          </TitleSection>
+          <Timer>
+            {formatTime(timeLeft)}
+            <br />
+            남은 시간
+          </Timer>
+        </TopRow>
+        <BottomRow>
+          <VoteSection>
+            <VoteButton type="pro">찬성: {data.agreePerson}</VoteButton>
+            <VoteButton type="con">반대: {data.disagreePerson}</VoteButton>
+          </VoteSection>
+          <BottomActions>
+            <ActionButton onClick={onClick}>
+              <ExitIcon style={{ marginRight: "10px" }} onClick={onClick} />
+              나가기
+            </ActionButton>
+          </BottomActions>
+        </BottomRow>
+      </DebateCard>
+      {open && <ResultModal onClose={() => setOpen(false)} />}
+    </>
   );
 }
 

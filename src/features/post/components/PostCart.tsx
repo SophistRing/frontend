@@ -51,7 +51,7 @@ interface ListItemProps {
   endDate: string;
   agreeNickname: string;
   opponentNickname: string;
-  whoiswin: string;
+  winner: string;
   onClick: () => void;
 }
 
@@ -62,7 +62,7 @@ function PostCard({
   endDate,
   agreeNickname,
   opponentNickname,
-  whoiswin,
+  winner,
   onClick,
 }: ListItemProps) {
   return (
@@ -77,7 +77,7 @@ function PostCard({
         <span>
           🤝 {agreeNickname} vs {opponentNickname}
         </span>
-        <Winner>🏆 승자: {whoiswin}</Winner>
+        <Winner>🏆 승자: {winner}</Winner>
       </InfoContainer>
     </ListContainer>
   );

@@ -22,6 +22,13 @@ export const useGetRoom = () => {
   });
 };
 
+export const useGetRoomAll = () => {
+  return useSuspenseQuery<RoomResponse>({
+    queryKey: ["room"],
+    queryFn: () => getData(`/room`),
+  });
+};
+
 export const useGetDetailRoom = (id?: string) => {
   return useSuspenseQuery<RoomDetailResponse>({
     queryKey: ["room", id],
@@ -37,7 +44,7 @@ export const useRoomAdd = () => {
     mutationFn: (data: RoomMakeType) => sendData("post", "/room/add", data),
 
     onSuccess: (res) => {
-      const roomId = res.result?.roomId;
+      const roomId = res.result?.roomId as any;
 
       stompHandler.connect(roomId);
       setRoom(res.result as RoomDetailType);

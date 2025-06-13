@@ -13,7 +13,7 @@ import {
 import ItemCover from "@/components/ItemCover";
 import SummaryContentItem from "@/features/home/components/summary/SummaryContentItem";
 import { useNavigate } from "react-router-dom";
-import { useProfileStore } from "@/features/login/store/useProfileStore";
+import useProfileStore from "@/features/login/store/useProfileStore";
 
 const Container = styled.div`
   width: 100%;
@@ -70,51 +70,60 @@ const MemberInfo = styled.p`
 `;
 
 const dummyData = [
-  { month: "1월", 참여: 20, 승리: 15 },
-  { month: "2월", 참여: 25, 승리: 18 },
-  { month: "3월", 참여: 30, 승리: 20 },
-  { month: "4월", 참여: 35, 승리: 22 },
-  { month: "5월", 참여: 40, 승리: 25 },
-  { month: "6월", 참여: 50, 승리: 30 },
+  { month: "1주", 참여: 20, 승리: 15 },
+  { month: "2주", 참여: 25, 승리: 18 },
+  { month: "3주", 참여: 30, 승리: 20 },
+  { month: "4주", 참여: 35, 승리: 22 },
+  { month: "5주", 참여: 40, 승리: 25 },
+  { month: "6주", 참여: 50, 승리: 30 },
 ];
 
 const expData = [
-  { month: "1월", 경험치: 1000 },
-  { month: "2월", 경험치: 2500 },
-  { month: "3월", 경험치: 4000 },
-  { month: "4월", 경험치: 7000 },
-  { month: "5월", 경험치: 11000 },
-  { month: "6월", 경험치: 16000 },
+  { month: "1주", 경험치: 1000 },
+  { month: "2주", 경험치: 2500 },
+  { month: "3주", 경험치: 4000 },
+  { month: "4주", 경험치: 7000 },
+  { month: "5주", 경험치: 11000 },
+  { month: "6주", 경험치: 16000 },
 ];
-
 const dummyContents = [
   {
-    id: 1,
-    title: "나루토 vs 사스케",
-    description: "ai 기술의 발전으로 토론",
-    chats: 32,
-    time: 15,
+    id: 3,
+    title: "AI 윤리적 한계는 어디까지인가?",
+    description: "AI가 인간의 결정을 대체할 수 있는가에 대한 윤리적 논의",
+    chats: 45,
+    time: 20,
   },
   {
-    id: 2,
-    title: "엄마 vs 아빠",
-    description: "ai 기술의 발전으로 토론",
-    chats: 50,
-    time: 16,
+    id: 4,
+    title: "원격근무는 미래의 표준이 될 수 있을까?",
+    description: "생산성과 워라밸 측면에서 원격근무의 장단점을 토론",
+    chats: 27,
+    time: 14,
+  },
+  {
+    id: 5,
+    title: "플라스틱 사용, 규제가 필요한가?",
+    description: "환경 보호를 위한 개인과 정부의 역할에 대해 논의",
+    chats: 38,
+    time: 18,
   },
 ];
 
 function Dashboard() {
   const navigate = useNavigate();
-  const { basicProfile } = useProfileStore();
+  const { profile, basicProfile } = useProfileStore();
   return (
     <Container>
       <ProfileCard>
-        <Avatar src={basicProfile?.imgUrl} alt="Profile" />
+        <Avatar
+          src={basicProfile?.imgUrl || "src/assets/profile.png"}
+          alt="Profile"
+        />
         <div>
-          <MemberNameHeader>{basicProfile?.memberName}</MemberNameHeader>
+          <MemberNameHeader>{profile?.nickname || "녀루"}</MemberNameHeader>
           <MemberInfo>
-            레벨: {basicProfile?.level} | 경험치: {basicProfile?.exp}
+            레벨: {basicProfile?.level} | 경험치: {basicProfile?.exp || 200}
           </MemberInfo>
         </div>
       </ProfileCard>

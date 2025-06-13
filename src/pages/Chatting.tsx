@@ -1,146 +1,149 @@
-import TopCard from "@/features/chatting/components/TopCard";
-import useSocket from "@/features/chatting/hooks/useSocket";
 import styled from "styled-components";
-import SubmitIcon from "@/assets/chatSubmit.svg?react";
+import useSocket from "@/features/chatting/hooks/useSocket";
 import useCustomParams from "@/utils/useCustomParams";
+import TopCard from "@/features/chatting/components/TopCard";
+import SubmitIcon from "@/assets/chatSubmit.svg?react";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
-export const ChatContainer = styled.div`
+const ChatContainer = styled.div`
   display: flex;
   justify-content: center;
-  padding: 40px;
-`;
-
-export const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  border-radius: 12px;
-`;
-
-export const MessageInputContainer = styled.div`
-  display: flex;
-  margin-bottom: 20px;
-  bottom: 0;
-`;
-
-export const MessageInput = styled.input`
-  padding: 10px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  margin-right: 10px;
   width: 100%;
-`;
-
-export const MessageList = styled.div`
-  max-height: 550px;
-  min-height: 550px;
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
-  position: relative;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  height: auto;
   overflow-y: auto;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+  overflow-x: hidden;
+  margin-top: 20px;
   margin-bottom: 20px;
 `;
 
-export const MessageItem = styled.div<{ isMe: boolean }>`
+const ChatBox = styled.div`
+  width: 50%;
   display: flex;
   flex-direction: column;
-  align-items: ${(props) => (props.isMe ? "flex-end" : "flex-start")};
-  width: 100%;
-  margin-bottom: 20px;
 `;
 
-export const Bubble = styled.div<{ isMe: boolean }>`
-  background-color: ${(props) => (props.isMe ? "#d1e7ff" : "#f1f1f1")};
-  color: #000;
-  padding: 10px 14px;
-  border-radius: 16px;
-  max-width: 60%;
-  word-break: break-word;
-  position: relative;
-
-  &::after {
-    content: "";
-    position: absolute;
-    top: 10px;
-    ${(props) =>
-      props.isMe
-        ? `
-      right: -8px;
-      border-left: 8px solid #d1e7ff;
-      border-top: 8px solid transparent;
-      border-bottom: 8px solid transparent;
-    `
-        : `
-      left: -8px;
-      border-right: 8px solid #f1f1f1;
-      border-top: 8px solid transparent;
-      border-bottom: 8px solid transparent;
-    `}
-  }
+const MessageList = styled.div`
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  min-height: 400px;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 `;
 
-export const Meta = styled.span`
-  font-size: 12px;
-  color: #666;
-  margin-top: 4px;
+const MessageItem = styled.div<{ isMe: boolean }>`
+  display: flex;
+  justify-content: ${(props) => (props.isMe ? "flex-end" : "flex-start")};
 `;
 
-export const MessageAuthor = styled.p<{ isMe: boolean }>`
-  font-size: 14px;
-  display: ${(props) => (props.isMe ? "none" : "flex")};
-  margin-bottom: 10px;
+const BubbleWrapper = styled.div`
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
 `;
 
-export const EnterButton = styled.button`
-  background-color: black;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-  text-align: center;
+const Bubble = styled.div<{ isMe: boolean }>`
+  background-color: ${(props) => (props.isMe ? "#e5efff" : "#f2f2f2")};
+  padding: 12px 16px;
+  border-radius: 12px;
+  max-width: 70%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  font-size: 0.7rem;
+  line-height: 1.4;
+`;
+
+const Time = styled.span`
+  font-size: 0.6rem;
+  color: #aaa;
+  white-space: nowrap;
+`;
+
+const MessageInputWrapper = styled.div`
+  display: flex;
+  margin-top: 12px;
+`;
+
+const MessageInput = styled.input`
+  flex: 1;
+  padding: 5px;
+  font-size: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-right: 10px;
+`;
+
+const SendButton = styled.button`
   width: 100px;
+  background: black;
+  color: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
 `;
+
+function formatTime(timestamp?: string | number) {
+  if (!timestamp) return "";
+  const date = new Date(timestamp);
+  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+}
 
 function Chatting() {
-  const {
-    stompHandler,
-    messageObj,
-    messages,
-    isEnterChat,
-    setMessageObj,
-    userId,
-  } = useSocket();
+  const { stompHandler, messageObj, messages, setMessageObj, userId } =
+    useSocket();
   const roomId = useCustomParams();
+  const [isEnterChat, setIsEnterChat] = useState(false);
+
+  useEffect(() => {
+    const adminMsg = messages.find((msg) => msg.sender === "admin");
+    if (adminMsg && !isEnterChat) {
+      toast.success(`${adminMsg.message}님이 입장했습니다.`);
+      setIsEnterChat(true);
+    }
+  }, [messages, isEnterChat]);
 
   return (
     <ChatContainer>
-      <Container>
+      <ChatBox>
         <TopCard />
         <MessageList>
-          {messages.map((item, index) => (
-            <MessageItem
-              key={`messages-${index}`}
-              isMe={item.sender === userId}
-            >
-              <MessageAuthor isMe={item.sender === userId}>
-                {item.sender}
-              </MessageAuthor>
-              <Bubble isMe={item.sender === userId}>{item.message}</Bubble>
-              <Meta>14:33</Meta>
-            </MessageItem>
-          ))}
+          {messages.map((msg, idx) => {
+            const isMe = msg.sender === userId;
+            return (
+              <>
+                {msg.sender !== "admin" && (
+                  <MessageItem key={idx} isMe={isMe}>
+                    <BubbleWrapper>
+                      {isMe ? (
+                        <>
+                          <Time>
+                            {formatTime(msg.timestamp) || "오전 09:00"}
+                          </Time>
+                          <Bubble isMe={isMe}>{msg.message}</Bubble>
+                        </>
+                      ) : (
+                        <>
+                          <Bubble isMe={isMe}>{msg.message}</Bubble>
+                          <Time>
+                            {formatTime(msg.timestamp) || "오전 09:00"}
+                          </Time>
+                        </>
+                      )}
+                    </BubbleWrapper>    
+                  </MessageItem>
+                )}
+              </>
+            );
+          })}
         </MessageList>
-        <MessageInputContainer>
+        <MessageInputWrapper>
           <MessageInput
-            type="text"
-            placeholder="메세지를 입력하세요."
             value={messageObj.message}
             onChange={(e) =>
               setMessageObj({ ...messageObj, message: e.target.value })
@@ -151,13 +154,14 @@ function Chatting() {
                 stompHandler.sendMessage(roomId);
               }
             }}
+            placeholder="메시지를 입력하세요"
           />
-          <EnterButton onClick={() => stompHandler.sendMessage(roomId)}>
-            <SubmitIcon style={{ marginRight: "10px" }} />
+          <SendButton onClick={() => stompHandler.sendMessage(roomId)}>
+            <SubmitIcon />
             전송
-          </EnterButton>
-        </MessageInputContainer>
-      </Container>
+          </SendButton>
+        </MessageInputWrapper>
+      </ChatBox>
     </ChatContainer>
   );
 }
